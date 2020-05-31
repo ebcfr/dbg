@@ -8,6 +8,7 @@ dbg is a simple, ultra-light debugger GUI interface for GDB. The debugger can be
 
 The directory containing the executable becomes the default directory and root of the project. All pathes to source files are relative to this place. An project tree example can be:
 
+```
    project
     +- include
     |   +- xxx.h
@@ -17,7 +18,7 @@ The directory containing the executable becomes the default directory and root o
     |   `- yyy.c
     +- Makefile
     `- main.elf
-   
+```
 
 The GUI is just a window for the currently debugged/viewed source file and another for the log.
    
