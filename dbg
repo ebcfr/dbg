@@ -2664,12 +2664,12 @@ proc Dbg::gdb_cmd {obj cmd {args ""}} {
 	upvar $obj self
 	set args [lindex $args 0]
 	switch -exact $cmd {
-		stat {
-			parray self
-		}
-		pp {
-			parray pp
-		}
+#		stat {
+#			parray self
+#		}
+#		pp {
+#			parray pp
+#		}
 		s - step {
 			if {$self(dbg:status) != "running"} {
 				if {$self(dbg:mode) == "C"} {
@@ -2834,16 +2834,20 @@ proc Dbg::gdb_cmd {obj cmd {args ""}} {
 		open {
 			InsMsg $obj "$cmd $args\n" prompt
 			foreach f $args {
-				foreach fname [glob $f] {
-					# append filename to file list and menu
-					if {[lsearch $self(file:list) $fname]<0} {
-						lappend self(file:list) $fname
-						set id [Ind2Label [llength $self(file:list)]]
-						set fnl "$id $fname"
-						$self(wid:menu:file) add command -underline 0 -label $fnl\
-						  -command [list Dbg::MNC $obj src $fname]
+				if { [catch {
+					foreach fname [glob $f] {
+						# append filename to file list and menu
+						if {[lsearch $self(file:list) $fname]<0} {
+							lappend self(file:list) $fname
+							set id [Ind2Label [llength $self(file:list)]]
+							set fnl "$id $fname"
+							$self(wid:menu:file) add command -underline 0 -label $fnl\
+							  -command [list Dbg::MNC $obj src $fname]
+						}
 					}
-				}
+				}]} {
+					InsMsg $obj "No such files!\n" error
+				} 
 			}
 		}
 		set {
