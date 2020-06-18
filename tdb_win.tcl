@@ -1,10 +1,9 @@
 #!/usr/bin/wish
 #
-# GUI Debugger Frontend for GDB (unix/win/mac).
-# Eric Bouchare
+# GUI Debugger Frontend for GDB (unix/win).
 
 #############################################################################
-# ctext By George Peter Staplin
+# By George Peter Staplin
 # See also the README for a list of contributors
 # RCS: @(#) $Id: ctext.tcl,v 1.9 2011/04/18 19:49:48 andreas_kupries Exp $
 
@@ -1227,13 +1226,11 @@ proc balloon:show {w arg} {
 package require msgcat
 #source ../ctext/ctext.tcl
 
-namespace eval Dbg {
+namespace eval Tdb {
 	set pchelp {
-Dbg help
+TDB is a simple, ultra-light debugger GUI interface for GDB. The debugger can be started from anywhere (but the project root seems a good idea). 
 
-dbg is a simple, ultra-light debugger GUI interface for GDB. The debugger can be started from anywhere (but the project root seems a good idea). 
-
-   dbg path/to/main.elf
+   tdb math/to/main.elf
 
 The directory containing the executable becomes the default directory and root of the project. All pathes to source files are relative to this place. An project tree example can be:
 
@@ -1249,7 +1246,7 @@ The directory containing the executable becomes the default directory and root o
    
 
 The GUI is just a window for the currently debugged/viewed source file and another for the log.
-
+   
 Commands can be sent to the gdb debugger, directly through the bottom 'GDB' entry or through the toolbar icons and the menu items. Commands sent are logged in the Log window, as well as their result. All gdb commands are available directly via the command/log window. Or use, Auto-step/Auto-next to animate-execute your program, hitting Escape to stop.
 
 Only 1 file can be viewed at a time. But a hook in the file menu is provided to reference source files with the command 'open'
@@ -1259,11 +1256,11 @@ Though,
     
 will include, in the file menu, 'main.c' and all c files from the 'lib' directory. New files not referenced yet are added to the hook as you step in.
    
-I. Debugging session setup and .dbginit
+I. Debugging session setup and .tdbinit
    ------------------------------------
-   The .dbginit file at the project root contains actions to be done before the debug session can start : reset of the board, connection handling to the target, loading the code, breakpoint on main ...
+   The .tdbinit file at the project root contains actions to be done before the debug session can start : reset of the board, connection handling to the target, loading the code, breakpoint on main ...
    
-   The first line, starting with #! gives the name of the debugger used. It must be available in the PATH of the system. Then all gdb valid commands can be used in the .dbginit script, as well as 'open' (not a gdb command).
+   The first line, starting with #! gives the name of the debugger used. It must be available in the PATH of the system. Then all gdb valid commands can be used in the .tdbinit script, as well as 'open' (not a gdb command).
 
    * Config example to use the simulator
 	#! arm-none-eabi-gdb
@@ -1336,13 +1333,13 @@ IV. Debugging native app
 
     Nothing special to be done
 	
-	dbg main.elf 1 2 3
+	tdb main.elf 1 2 3
 	
     input/output in console.
 	
 V.  Debugging fork
 VI. Debugging threaded code
-A1.  .dbginit file examples
+A1.  .tdbinit file examples
      a. Linux native
      
 	#! gdb
@@ -1362,49 +1359,50 @@ A1.  .dbginit file examples
      
 TODO
 - fonctionnalité auto-reload quand l'exécutable change
+- vue mémoire ?
+- vue variables ? 
+- vue désassemblée ?
+- vue registres ?
+- revoir les paramètres optionnels
 - opensrc : make a plugin system to add more syntax highliting filters
 
-v1.1.2 2020.05.31
-- restart: reset the board without reflaflashing the microcontroller
-- autoreload when the binary app is updated
-- warning when using source files newer than the binary app
-
+DONE
 v1.1.1 2016.07.01
 - add comand line args support for native applications (by Fabrice Harrouet)
-- drop support for core debug
-- fix: breakpoint display bug
+- drop support fore core debug
+- correction: breakpoint display bug
 
 v1.1.0 2016.06.28
 - code cleanup
 - the path to the executable is the root of the project. Source files path 
   are relative to this place and must be at the same level or in 
   subdirectories
-- bug fixes
+- bugs correction
   * file normalization relative to executable place whenever possible
-  * view the right source file when debug is paused
+  * view the right source file and debug is paused
 
 
 v1.0 2016.01.28 initial release
-- heavily modified from an old version of tdb (v1.3) by Peter Mc Donald
-  http://pdqi.com/
+- built than enhanced from an old version of tdb (v1.3) by Peter Mc Donald
+  http://pdqi.com/browsex/TDB.html
   
   The key ideas were :
   * Learn tcl/tk :-)
-  * Make a cross-platform gdb front end with no other dependancy than the 
+  * Make a cross-platform gdb front end with no other dependancies than the 
     basic tcl/tk found on every Linux distro. All the code in a single file.
-  * Simplify the GUI : no editing, no project handling. A debugger should be
+  * Simplify the GUI : no editing, on project handling. A debugger should be
     used for debugging programs. Project handling through makefile. Just
-    enough GUI to ease the developper's life. For everything else, rely on 
-    gdb capability to connect to targets, view variables ...
+    enough GUI to ease the developper's life. For rest, rely on gdb capability
+    to connect to targets, view variables ...
   * Have a simple configuration format that largely rely on gdb to be able
-    to debug any C/C++/asm program running on different target types from
+    to debug any C/C++/ARM asm program running on different target types from
     bare metal target to native programs, to embedded Linux targets debugged
     through the network.
     
-- code simplification, GUI review, complete event handling review
+- code simplification, GUI review complete event handling review
 - syntax highlighting through a modified version of the ctext megawidget
 - balloon help
-- .dbginit file contains the target connection parameters and gdb commands to
+- .tdbinit file contains the target connection parameters and gdb commands to
   be executed when loading the program (before user can interact with it)
 - partial gdbmi protocol
 - reload fonctionnality with breakpoints keeping
@@ -1512,27 +1510,22 @@ v1.0 2016.01.28 initial release
 		AVPm6wMmYs42AiJmzJAhZs58QYMGsOBLQNCYSTN5chomakjVBDIFTRrGQB5rFhS69OjTqFHLCAQA
 		Ow==
 	}]
-	set pc(img:restart) [image create photo -format GIF -data {
-        R0lGODlhFAAVAPEAAAAAANwjAAAAAAAAACH5BAEAAAIALAAAAAAUABUAAAI+lC+AywjaonlQMlrt
-        wVnzLn1gI45LaW7oEjgl06ofHMTJTNs4W9cTFun5bo+gwUYMxpBF49FhQSKVOaEVUQAAOw==
-	}]
 #		R0lGODlhFgAWAIYAAPwCBCRSFCRSHBw+DBxCFCQ6FBwyDBQWBBxGFCxyLGTChMzqzLzmvHzKjDyOTER+RERyNDSqXNzy3LzivFS+fCyCPBQmBCQiBBxKFBQqDOTy3LTitES2dDR+PCxuJOT25KTarCx+PESSTCxKHDSeVCyKRNT21ESWVDSGPBQyDAQCBBQSFDRuLDSyZDySTGzChCRiJKSmpExKTDS2ZGzGhLy+vGxqbISChDSKRMzKzGxubDQ2NIyOjCQiJCwqLBQWFCwuLKSipERCRERGRHR2dAwKDDw6PFRWVIyKjCQmJFRSVBwaHKyurAQGBExOTBweHFxeXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAWABYAAAf9gACCg4IBAgMEBQYHhI2ECAkKCwwNDg8QBAOOhAQREhMUFQgWBxcHGBmbggkaGxwPB4yDB6SbBJIKHQaqtY0eHyAhsqrDgx4aCiKpqoQHAyMjJBMKJaSxzAAHIRsmJgonKA0LHSmDKiuOBywRLSQuLyEwwyoxMuiN6iUzNBXy5jU2bsgoJugABBz95uXQsUMGD3vpPPgTpKIGwx4+HMr4kW4YkCA2hAzxAQSIECI+imBTwVIFESNHerRUgc0cEiFHkjiiyYzeDiVLdvLcySSkkKGEWiZVweSGkIHMmvQosoQlkaZOjvhosvKJjIAxoOAsgpRZkQNLnvSoqspAIAAh/mhDcmVhdGVkIGJ5IEJNUFRvR0lGIFBybyB2ZXJzaW9uIDIuNQ0KqSBEZXZlbENvciAxOTk3LDE5OTguIEFsbCByaWdodHMgcmVzZXJ2ZWQuDQpodHRwOi8vd3d3LmRldmVsY29yLmNvbQA7
 #		R0lGODlhEAAQAIUAAPwCBCRaJBxWJBxOHBRGBCxeLLTatCSKFCymJBQ6BAwmBNzu3AQCBAQOBCRSJKzWrGy+ZDy+NBxSHFSmTBxWHLTWtCyaHCSSFCx6PETKNBQ+FBwaHCRKJMTixLy6vExOTKyqrFxaXDQyNDw+PBQSFHx6fCwuLJyenDQ2NISChLSytJSSlFxeXAwODCQmJBweHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAQABAAAAaBQIBQGBAMBALCcCksGA4IQkJBUDIDC6gVwGhshY5HlMn9DiCRL1MyYE8iiapaSKlALBdMRiPckDkdeXt9HgxkGhWDXB4fH4ZMGnxcICEiI45kQiQkDCUmJZskmUIiJyiPQgyoQwwpH35LqqgMKiEjq5obqh8rLCMtowAkLqovuH5BACH+aENyZWF0ZWQgYnkgQk1QVG9HSUYgUHJvIHZlcnNpb24gMi41DQqpIERldmVsQ29yIDE5OTcsMTk5OC4gQWxsIHJpZ2h0cyByZXNlcnZlZC4NCmh0dHA6Ly93d3cuZGV2ZWxjb3IuY29tADs=
 
-	set pc(dbg:version) 1.1.2
-	set pc(file:config) .dbgcnf
-	set pc(file:init) .dbginit
+	set pc(tdb:version) 1.1.1
+	set pc(file:config) .tdbcnf
+	set pc(file:init) .tdbinit
 	set pc(path:home) $env(HOME)
 	set pc(file:types) {
 		{{All Files}        *             }
-		{{C Source Files}   {.s .S .asm .c .h .cpp .cxx .hpp .hxx .ino}      TEXT}
+		{{C Source Files}   {.s .S .asm .c .h .cpp .cxx .hpp .hxx}      TEXT}
 		{{Text Files}       {.txt}        }
 	}
   
 	# program configurable parameters
 	array set pp {
-		dbg:geom		620x640
-		dbg:autoreload	0
+		tdb:geom 	620x600
 	}
 	
 	# load options : config file may be in $HOME or in current directory
@@ -1623,22 +1616,22 @@ proc highlight:setup:arm {win} {
 #
 # Create a new instance of the debugger GUI
 #
-proc Dbg::new {args} {
+proc Tdb::new {args} {
 	variable pc
 	variable pp
 	variable id
 	
 	set v $id
 	# create new object instance
-	set obj ::Dbg::inst$id
+	set obj ::Tdb::inst$id
 	upvar $obj self
 	incr id
 	
-	toplevel [set w .dbg$v]
-	wm protocol $w WM_DELETE_WINDOW "Dbg::quit $obj"
-	wm geom $w $pp(dbg:geom)
-	wm title $w {Debugger}
-	lappend pc(dbg:views) $obj
+	toplevel [set w .tdb$v]
+	wm protocol $w WM_DELETE_WINDOW "Tdb::quit $obj"
+	wm geom $w $pp(tdb:geom)
+	wm title $w {TDB Debugger}
+	lappend pc(tdb:views) $obj
 	
 	### instance state array
 	# cur:file     : current file in the source view
@@ -1648,6 +1641,7 @@ proc Dbg::new {args} {
 	#                considered as the root of the project. The pathes to the
 	#                source files will be expressed relatively to this place.
 	# dbg:prog     : the executable being debugged
+	# FAB: added progargs
 	# dbg:progargs : command line arguments for prog
 	# dbg:file     : the source file with the code the PC points to
 	# dbg:line     : the line in the dbg:file the PC points to
@@ -1663,7 +1657,7 @@ proc Dbg::new {args} {
 		dbg:line					1 \
 		dbg:func					{} \
 		dbg:prog					{} \
-		dbg:progargs				{} \
+		dbg:progargs					{} \
 		dbg:status					stopped \
 		dbg:mode					C \
 		file:list					{} \
@@ -1681,42 +1675,42 @@ proc Dbg::new {args} {
 	set mdesc {
 		"&File"
 		{
-			{ "&Debug Program"	{::Dbg::MNC $obj open}				Ctrl-N	}
-			{ "&Reload"			{::Dbg::gdb_cmd $obj reload}		Ctrl-R	}
+			{ "&Debug Program"	{::Tdb::MNC $obj open}				Ctrl-N	}
+			{ "&Reload"			{::Tdb::gdb_cmd $obj reload}		Ctrl-R	}
 			{ -																}
-			{ "&Open Source"	{::Dbg::MNC $obj src}				Ctrl-O	}
+			{ "&Open Source"	{::Tdb::MNC $obj src}				Ctrl-O	}
 			{ -																}
-			{ "E&xit"			{::Dbg::MNC $obj exit}				Ctrl-X	}
+			{ "E&xit"			{::Tdb::MNC $obj exit}				Ctrl-X	}
 			{ -																}
 		}
 	 	"&Debug"
 		{
-			{ "&Step"			{::Dbg::gdb_cmd $obj step}			F5		}
-			{ "&Next"			{::Dbg::gdb_cmd $obj next}			F6		}
-			{ "&Finish"			{::Dbg::gdb_cmd $obj finish}		F7		}
-			{ "&Continue"		{::Dbg::gdb_cmd $obj cont}			F8		}
-			{ "&Interrupt"		{::Dbg::gdb_cmd $obj stop}			Ctrl-F8	}
+			{ "&Step"			{::Tdb::gdb_cmd $obj step}			F5		}
+			{ "&Next"			{::Tdb::gdb_cmd $obj next}			F6		}
+			{ "&Finish"			{::Tdb::gdb_cmd $obj finish}		F7		}
+			{ "&Continue"		{::Tdb::gdb_cmd $obj cont}			F8		}
+			{ "&Interrupt"		{::Tdb::gdb_cmd $obj stop}			Ctrl-F8	}
 			{ -																}
-			{ "&Up"				{::Dbg::gdb_cmd $obj up}					}
-			{ "&Down"			{::Dbg::gdb_cmd $obj down}					}
+			{ "&Up"				{::Tdb::gdb_cmd $obj up}					}
+			{ "&Down"			{::Tdb::gdb_cmd $obj down}					}
 			{ -																}
-			{ "&Auto-step"		{::Dbg::MNC $obj anims}						}
-			{ "&Auto-next"		{::Dbg::MNC $obj animn}						}
+			{ "&Auto-step"		{::Tdb::MNC $obj anims}						}
+			{ "&Auto-next"		{::Tdb::MNC $obj animn}						}
 		}
 		"&Show"
 		{
-			{ "&Registers"		{::Dbg::gdb_cmd $obj reg}					}
-			{ "&Globals"		{::Dbg::gdb_cmd $obj {info var}}			}
-			{ "&Locals"			{::Dbg::gdb_cmd $obj {info locals}}			}
-			{ "&Breakpoints"	{::Dbg::gdb_cmd $obj {info break}}			}
+			{ "&Registers"		{::Tdb::gdb_cmd $obj reg}					}
+			{ "&Globals"		{::Tdb::gdb_cmd $obj {info var}}			}
+			{ "&Locals"			{::Tdb::gdb_cmd $obj {info locals}}			}
+			{ "&Breakpoints"	{::Tdb::gdb_cmd $obj {info break}}			}
 			{ -																}
-			{ "&Type"			{::Dbg::gdb_cmd $obj whatis}				}
-			{ "&Struct"			{::Dbg::gdb_cmd $obj ptype}					}
+			{ "&Type"			{::Tdb::gdb_cmd $obj whatis}				}
+			{ "&Struct"			{::Tdb::gdb_cmd $obj ptype}					}
 		}
 		"&Help"
 		{
-			{ "&Help"			{::Dbg::help $obj DBG}				F1		}
-			{ "&About"			{::Dbg::MNC $obj about}						}
+			{ "&Help"			{::Tdb::help $obj TDB}				F1		}
+			{ "&About"			{::Tdb::MNC $obj about}						}
 		}
 	}
 
@@ -1764,7 +1758,6 @@ proc Dbg::new {args} {
 	pack [frame [set self(wid:toolbar) [set b $w.tool]]] -fill x
 	foreach {i tip} { 
 	    reload {Reload}
-	    restart {Restart}
 		stop {Interrupt [Ctrl-C]} \
 		cont {Continue [F8]} \
 		step {Step [F5]} \
@@ -1792,11 +1785,11 @@ proc Dbg::new {args} {
 		}
 		set ttl [string totitle $i]
 		if {[info exists pc(img:$i)]} {
-			pack [button $b.$i -image $pc(img:$i) -command [list Dbg::gdb_cmd $obj $cmd]\
+			pack [button $b.$i -image $pc(img:$i) -command [list Tdb::gdb_cmd $obj $cmd]\
 				-relief flat -pady 0 -padx 0] -side left
 			balloon $b.$i $tip
 		} else {
-			pack [button $b.$i -text $bttl -command [list Dbg::gdb_cmd $obj $cmd]\
+			pack [button $b.$i -text $bttl -command [list Tdb::gdb_cmd $obj $cmd]\
 				-relief flat -pady 0 -padx 0] -side left
 			balloon $b.$i $tip
 		}
@@ -1822,13 +1815,12 @@ proc Dbg::new {args} {
 		-yscrollcommand "$f.s set"] -fill both -expand 1
 	[set self(wid:file) $f.text] conf -state disabled -exportselection 1
 	ctext::enableComments $f.text
-	bind $f.text <Double-1> "Dbg::evDblClickCB $obj %x %y"
+	bind $f.text <Double-1> "Tdb::evDblClickCB $obj %x %y"
   
 	## tag curr   : current debugged instruction line
 	## tag bp     : breakpoint
 	## tag currbp : current debugged instruction line is a breakpoint
-#	$f.text tag conf curr -background lightblue
-	$f.text tag conf curr -background lightgreen
+	$f.text tag conf curr -background lightblue
 	$f.text tag conf currbp -background orange
 	$f.text tag conf bp -background red -foreground black
 
@@ -1841,8 +1833,8 @@ proc Dbg::new {args} {
 	pack $tb.format -side left
 	pack [label $tb.l3 -text "Nb :"] -side left
 	pack [spinbox $tb.s -width 5 -from 0 -to 1000 -textvariable ${obj}(data:size)] -side left
-	pack [button $tb.view -text "Show Memory" -command [list ::Dbg::MNC $obj mem]] -side left
-	pack [button $tb.disasm -text "Disassemble" -command [list ::Dbg::MNC $obj disasm]] -side left
+	pack [button $tb.view -text "Show Memory" -command [list ::Tdb::MNC $obj mem]] -side left
+	pack [button $tb.disasm -text "Disassemble" -command [list ::Tdb::MNC $obj disasm]] -side left
   
 	# gdb log widget
 	set c $w.pw.cmd.t
@@ -1881,24 +1873,23 @@ proc Dbg::new {args} {
 		$s.r conf -disabledforeground black
 	}
 
-	bind $self(wid:cmdentry) <Return> "Dbg::evCmdEntryReturnCB $obj"
-	bind $self(wid:cmdentry) <Down> [list Dbg::evCmdEntryHistoryCB $obj 0]
-	bind $self(wid:cmdentry) <Up> [list Dbg::evCmdEntryHistoryCB $obj 1]
+	bind $self(wid:cmdentry) <Return> "Tdb::evCmdEntryReturnCB $obj"
+	bind $self(wid:cmdentry) <Down> [list Tdb::evCmdEntryHistoryCB $obj 0]
+	bind $self(wid:cmdentry) <Up> [list Tdb::evCmdEntryHistoryCB $obj 1]
 	
-#	bind $b.search <Return> "Dbg::search $obj"
+#	bind $b.search <Return> "Tdb::search $obj"
 	
-	bind $w <Control-c> "Dbg::unanimate $obj;Dbg::gdb_cmd $obj stop"
-	bind $w <Escape> "Dbg::unanimate $obj;Dbg::gdb_cmd $obj stop"
+	bind $w <Control-c> "Tdb::unanimate $obj;Tdb::gdb_cmd $obj stop"
+	bind $w <Escape> "Tdb::unanimate $obj;Tdb::gdb_cmd $obj stop"
   
-	bind $tb.addr <Return> "Dbg::MNC $obj mem"
-	bind $tb.s    <Return> "Dbg::MNC $obj mem"
+	bind $tb.addr <Return> "Tdb::MNC $obj mem"
   
 	focus $self(wid:cmdentry)
 
 	return $obj
 }
 
-proc Dbg::search {obj} {
+proc Tdb::search {obj} {
 	upvar $obj self
 
 	set fw $self(wid:file)
@@ -1917,7 +1908,7 @@ proc Dbg::search {obj} {
 	puts $status
 }
 
-proc Dbg::highlight_dbgline {obj highlight} {                
+proc Tdb::highlight_dbgline {obj highlight} {                
 	upvar $obj self
 	# update instruction pointer highlighting
 	
@@ -1954,19 +1945,12 @@ proc Dbg::highlight_dbgline {obj highlight} {
 #
 # open a source file, update breakpoints enlightment for the viewed file
 #
-proc Dbg::open_src {obj args} {
+proc Tdb::open_src {obj args} {
 	upvar $obj self
 	set fname [lindex $args 0]
 	if {$fname == {}} {
 		return
 	}
-	
-	if {$self(dbg:prog) != ""} {
-		if {[file mtime $fname] > $self(dbg:prog:mtime)} {
-			InsMsg $obj "Warning: source file is newer than program. The program may need to be updated\n" info1
-		}
-	}
-
 	set dat [read [set fp [open $fname]]]
 	close $fp
 	
@@ -1981,7 +1965,7 @@ proc Dbg::open_src {obj args} {
 	$fw delete 1.0 end
 	$fw fastinsert end $dat
 	$fw conf -state disabled
-	if {[regexp {.*\.([hc]|cpp|cxx|hpp|hxx|ino)$} $fname]} {
+	if {[regexp {.*\.([hc]|cpp|cxx|hpp|hxx)$} $fname]} {
 		#puts "c file : $fname"
 		highlight:setup:C $fw
 	} elseif {[regexp {.*\.[sS]$} $fname]} {
@@ -1998,7 +1982,7 @@ proc Dbg::open_src {obj args} {
 		set id [Ind2Label [llength $self(file:list)]]
 		set fnl "$id $fname"
 		$self(wid:menu:file) add command -underline 0 -label $fnl\
-		  -command [list Dbg::MNC $obj src $fname]
+		  -command [list Tdb::MNC $obj src $fname]
 	}
 	
 	# the file becomes the current viewed file
@@ -2012,7 +1996,7 @@ proc Dbg::open_src {obj args} {
 	}
 }
 
-proc Dbg::Ind2Label {n} {
+proc Tdb::Ind2Label {n} {
 	if {$n < 10} {
 		return $n
 	}
@@ -2021,7 +2005,7 @@ proc Dbg::Ind2Label {n} {
 }
 
 # Handle menu command
-proc Dbg::MNC {obj cmd args} {
+proc Tdb::MNC {obj cmd args} {
     variable pc
     variable pp
     upvar $obj self
@@ -2052,44 +2036,39 @@ proc Dbg::MNC {obj cmd args} {
 		    }
 		}
 	    exit {
-		    if {[tk_messageBox -icon warning -type yesno -title "Exit debugger" \
-		      -message [concat {Your Sure You Want To Exit} dbg?]] != "yes"} {
+		    if {[tk_messageBox -icon warning -type yesno -title "Exit TDB" \
+		      -message [concat {Your Sure You Want To Exit} TDB?]] != "yes"} {
 				return
 		    }
-		    foreach i $pc(dbg:views) { quit $i }
+		    foreach i $pc(tdb:views) { quit $i }
 		}
 	    anims {
 		    InsMsg $obj "Hit ESCAPE to stop Auto-step\n"
-		    set self(animate) [after $self(animdelay) Dbg::animate $obj step]
+		    set self(animate) [after $self(animdelay) Tdb::animate $obj step]
 		}
 	    animn {
 		    InsMsg $obj "Hit ESCAPE to stop Auto-next\n"
-		    set self(animate) [after $self(animdelay) Dbg::animate $obj next]
+		    set self(animate) [after $self(animdelay) Tdb::animate $obj next]
 		}
 		mem {
 #           puts "Show memory : $self(data:address), $self(data:format), $self(data:size)"
 			if {[string range $self(data:address) 0 1] eq "0x"} {
-				set s [format "x/%d%sx 0x%x" $self(data:size) [string range $self(data:format) 0 0] $self(data:address)]
+			        set s [format "x/%d%sx 0x%x" $self(data:size) [string range $self(data:format) 0 0] $self(data:address)]
 			} else {
-				set s [format "x/%d%sx %s" $self(data:size) [string range $self(data:format) 0 0] $self(data:address)]
+			        set s [format "x/%d%sx %s" $self(data:size) [string range $self(data:format) 0 0] $self(data:address)]
 			}
 			gdb_cmd $obj $s
 		}
 		disasm {
-			set s ""
 			if {[string range $self(data:address) 0 1] eq "0x"} {
-				set s [format "disassemble/rm 0x%x,0x%x" $self(data:address) [expr $self(data:address) + 4*$self(data:size)]]
+			        set s [format "disassemble/rm 0x%x,0x%x" $self(data:address) [expr $self(data:address) + 4*$self(data:size)]]
 			} elseif {$self(data:address) ne {}} {
-				set s [format "disassemble/rm %s" $self(data:address) ]
+			        set s [format "disassemble/rm %s" $self(data:address) ]
 			}
-			if {$s != ""} {
-				gdb_cmd $obj $s
-			} else {
-				InsMsg $obj "Argument required (starting disassemble address)\n" error
-			}
+			gdb_cmd $obj $s
 		}
 		about {
-			tk_messageBox -message "Dbg $::Dbg::pc(dbg:version) - A Debugger \n (C) 2019\n Eric Boucharé"
+			tk_messageBox -message "TDB $::Tdb::pc(tdb:version) - A Debugger \n (C) 2016\n Eric Boucharé"
 		}
     }
 }
@@ -2100,7 +2079,7 @@ proc Dbg::MNC {obj cmd args} {
 
 # Dbl click in the source code window event callback
 #   toggle a breakpoint for cur:file
-proc Dbg::evDblClickCB {obj x y} {
+proc Tdb::evDblClickCB {obj x y} {
 	upvar $obj self
 	set w $self(wid:file)
 	set id [$w index @$x,$y]
@@ -2111,7 +2090,7 @@ proc Dbg::evDblClickCB {obj x y} {
 	after 1 "selection clear"
 }
 
-proc ::Dbg::evCmdEntryHistoryCB {obj dir} {
+proc ::Tdb::evCmdEntryHistoryCB {obj dir} {
 	upvar $obj self
 	set l [llength $self(var:cmd:hist)]
 	if {$dir} {
@@ -2130,7 +2109,7 @@ proc ::Dbg::evCmdEntryHistoryCB {obj dir} {
 	$self(wid:cmdentry) icursor end
 }
 
-proc Dbg::evCmdEntryReturnCB {obj} {
+proc Tdb::evCmdEntryReturnCB {obj} {
 	upvar $obj self
 	if {$self(var:cmd) != {}} {
 		# update cmd history
@@ -2155,39 +2134,7 @@ proc Dbg::evCmdEntryReturnCB {obj} {
 	}
 }
 
-proc Dbg::trackExecChange {obj} {
-	upvar $obj self
-	variable pp
-	if {![info exists self(trackexec)]} {
-		return
-	}
-	if {[file exists $self(dbg:path)/$self(dbg:prog)]} {
-		if {[file mtime $self(dbg:path)/$self(dbg:prog)] > $self(dbg:prog:mtime)} {
-			if {$pp(dbg:autoreload) == 0} {
-				InsMsg $obj "!!$self(dbg:prog): a newer executable is available for reload (you can enable autoreload with the command 'set autoreload 1').\n" info2
-				after cancel $self(trackexec)
-				unset self(trackexec)
-				return
-			} else {
-				InsMsg $obj "!!$self(dbg:prog): executable reload (this feature can be disabled with 'set autoreload 0').\n" info2
-				gdb_cmd $obj reload
-				return
-			}
-		}
-	}
-	set self(trackexec) [after 2000 Dbg::trackExecChange $obj]
-}
-
-proc Dbg::untrackExecChange {obj} {
-	upvar $obj self
-	if {[info exists self(trackexec)]} {
-		after cancel $self(trackexec)
-		unset self(trackexec)
-	}
-}
-
-
-proc Dbg::InsMsg {obj dat {tag {}}} {
+proc Tdb::InsMsg {obj dat {tag {}}} {
 	upvar $obj self
 	if {$dat != {}} {
 		$self(wid:cmdlog) conf -state normal
@@ -2201,43 +2148,39 @@ proc Dbg::InsMsg {obj dat {tag {}}} {
 	$self(wid:cmdlog) see end
 }
 
-proc Dbg::quit {obj} {
+proc Tdb::quit {obj} {
 	variable pc
 	variable pp
 	upvar $obj self
-	if {[info exists self(trackexec)]} {
-		after cancel $self(trackexec)
-		unset self(trackexec)
-	}
 	set bg [wm geom $self(wid:base)]
 	regexp {^[0-9]*x[0-9]*} $bg bg
 	gdb_cmd $obj quit
 	catch {fileevent $self(dbg:pipe) r {}}
 	destroy $self(wid:base)
 	unset self
-	if {[llength $pc(dbg:views)] == 1} {
-		set pp(dbg:geom) $bg
+	if {[llength $pc(tdb:views)] == 1} {
+		set pp(tdb:geom) $bg
 		# save config options in $HOME
 		set fp [open [file join $pc(path:home) $pc(file:config)] w]
 		puts $fp [array get pp]
 		close $fp
 		exit 0
 	}
-	if {[set i [lsearch $pc(dbg:views) $obj]] >= 0} {
-		set pc(dbg:views) [lreplace $pc(dbg:views) $i $i]
+	if {[set i [lsearch $pc(tdb:views) $obj]] >= 0} {
+		set pc(tdb:views) [lreplace $pc(tdb:views) $i $i]
 	}
 }
 
-proc Dbg::animate {obj cmd} {
+proc Tdb::animate {obj cmd} {
 	upvar $obj self
 	if {![info exists self(animate)]} {
 		return
 	}
 	gdb_cmd $obj $cmd
-	set self(animate) [after $self(animdelay) Dbg::animate $obj $cmd]
+	set self(animate) [after $self(animdelay) Tdb::animate $obj $cmd]
 }
 
-proc Dbg::unanimate {obj} {
+proc Tdb::unanimate {obj} {
 	upvar $obj self
 	if {[info exists self(animate)]} {
 		after cancel $self(animate)
@@ -2245,10 +2188,10 @@ proc Dbg::unanimate {obj} {
 	}
 }
 
-proc Dbg::help {obj nam} {
+proc Tdb::help {obj nam} {
 	variable pc
 	variable pchelp
-	set t .dbghelp
+	set t .tdbhelp
 	if {[catch {toplevel $t}]} {
 		destroy $t
 		toplevel $t
@@ -2263,7 +2206,7 @@ proc Dbg::help {obj nam} {
 ############################################################################
 # Breakpoint info management
 ############################################################################
-proc Dbg::bp_srch {idx lst pat} {
+proc Tdb::bp_srch {idx lst pat} {
 	set n 0
 	foreach i $lst {
 		if {[lindex $i $idx] == $pat} {
@@ -2274,7 +2217,7 @@ proc Dbg::bp_srch {idx lst pat} {
 	return -1
 }
 
-proc Dbg::BP {obj cmd args} {
+proc Tdb::BP {obj cmd args} {
 #puts "BP $cmd $args"
 	variable pc
 	upvar $obj self
@@ -2367,9 +2310,8 @@ proc Dbg::BP {obj cmd args} {
 ################################################################################
 # Begin GDB SPECIFIC COMMANDS
 
-proc Dbg::gdb_load_elf {obj args {keep_bp {no}}} {
+proc Tdb::gdb_load_elf {obj args {keep_bp {no}}} {
 	variable pc
-	variable pp
 	upvar $obj self
 	
 	# Normalize path and change path to directory containing the executable.
@@ -2381,8 +2323,7 @@ proc Dbg::gdb_load_elf {obj args {keep_bp {no}}} {
 		cd $self(dbg:path)
 	}
 	set self(dbg:prog) [string range $fname [expr [string length $self(dbg:path)] + 1] end]
-	set self(dbg:prog:mtime) [file mtime $self(dbg:path)/$self(dbg:prog)]
-	wm title $self(wid:base) "Debugger: $self(dbg:prog)"
+	wm title $self(wid:base) "TDB Debugger: $self(dbg:prog)"
 
 	# FAB: memorised prog args
 	# FIXME: does not deal well with corepid (specific syntax required)
@@ -2392,7 +2333,7 @@ proc Dbg::gdb_load_elf {obj args {keep_bp {no}}} {
 	set self(dbg:file) {}
 	set self(dbg:line) {}
 	
-	# analyze .dbginit file
+	# analyze .tdbinit file
 	set initfile "$self(dbg:path)/$pc(file:init)"
 	if [file exists $initfile] {
 		set f [open $initfile r]
@@ -2422,26 +2363,20 @@ proc Dbg::gdb_load_elf {obj args {keep_bp {no}}} {
 	set self(dbg:gdbpid) [pid $self(dbg:pipe)]
 	InsMsg $obj $cmd\n
 	fconfigure $self(dbg:pipe) -blocking 0
-	fileevent $self(dbg:pipe) r [list Dbg::gdb_in $obj]
+	fileevent $self(dbg:pipe) r [list Tdb::gdb_in $obj]
 	set self(starting) 0
 	set self(restarting) 0
 	if {$::tcl_platform(platform) == {windows}} {
 		gdb_out $obj "set target-async on"
 	}
-	gdb_out $obj "set host-charset UTF-8"
-	gdb_out $obj "set target-charset UTF-8"
-#	gdb_out $obj "set target-wide-charset UTF-32"
 	
 	set self(starting) 1
-	# execute .dbginit commands if any
+	# execute .tdbinit commands if any
 	if [file exists $initfile] {
-		$self(wid:toolbar).restart configure -state normal
 		foreach line $rcdata {
 		    gdb_out $obj $line
 		} 
 	} else {
-		# it is a local compiled app, disable the restart option
-		$self(wid:toolbar).restart configure -state disabled
 		# FAB: use tty and prog args
 		if {$::tcl_platform(platform) != {windows}} {
 			set tty [exec tty]
@@ -2471,14 +2406,9 @@ proc Dbg::gdb_load_elf {obj args {keep_bp {no}}} {
 		# remove all breakpoints if any
 		array unset self {bp%*}
 	}
-	
-	# if autoreload feature activated, watch for target change
-	if {$pp(dbg:autoreload) == 1 && ![info exists self(trackexec)]} {
-		set self(trackexec) [after 2000 Dbg::trackExecChange $obj]
-	}
 }
 
-proc Dbg::gdb_in {obj} {
+proc Tdb::gdb_in {obj} {
 	variable pc
 	upvar $obj self
 	if {![info exists self(wid:file)]} {
@@ -2524,26 +2454,6 @@ proc Dbg::gdb_in {obj} {
 			set s [lindex [string range $data 1 end] 0]
 			if {$s == "\n" || [string match {warning:*} $s]} {
 				return
-			} elseif {[string range $s 0 2] == "Ed:"} {
-				return
-			} elseif {[string range $s 0 2] == "Et:"} {
-				InsMsg $obj [string range $s 3 end] error
-			} elseif {[string range $s 0 3] == "Na: "} {
-				return
-			} elseif {[string range $s 0 3] == "Ni: "} {
-				return
-			} elseif {[string range $s 0 3] == "Ns: "} {
-				InsMsg $obj [string range $s 4 end] reply
-			} elseif {[string range $s 0 3] == "Nc: "} {
-				InsMsg $obj [string range $s 4 end] reply
-			} elseif {[string range $s 0 3] == "Pc: "} {
-				InsMsg $obj [string range $s 4 end] info2
-			} elseif {[string range $s 0 3] == "Pb: "} {
-				InsMsg $obj [string range $s 4 end] info2
-			} elseif {[string range $s 0 3] == "Ps: "} {
-				InsMsg $obj [string range $s 4 end] info2
-			} elseif {[string range $s 0 1] == "Wc"} {
-				InsMsg $obj [string range $s 2 end] info1
 			} else {
 				InsMsg $obj $s prompt
 			}
@@ -2555,19 +2465,6 @@ proc Dbg::gdb_in {obj} {
 
 			set self(var:stat) "Status: stopped \[$q(reason)\]"
 			set self(dbg:status) stopped
-			$self(wid:toolbar).restart configure -state normal
-			$self(wid:toolbar).step configure -state normal
-			$self(wid:toolbar).next configure -state normal
-			$self(wid:toolbar).finish configure -state normal
-			$self(wid:toolbar).up configure -state normal
-			$self(wid:toolbar).down configure -state normal
-			$self(wid:toolbar).backtrace configure -state normal
-			$self(wid:toolbar).stepi configure -state normal
-			$self(wid:toolbar).nexti configure -state normal
-			$self(wid:toolbar).reg configure -state normal
-			$self(wid:toolbar).print configure -state normal
-			$self(wid:toolbar).display configure -state normal
-			
 			# stopped in new function ?
 			if {$q(func) != $self(dbg:func)} {
 				set self(dbg:func) $q(func)
@@ -2622,18 +2519,6 @@ proc Dbg::gdb_in {obj} {
 			if {$self(cur:file) eq $self(dbg:file)} {
 				highlight_dbgline $obj 0
 			}
-			$self(wid:toolbar).restart configure -state disabled
-			$self(wid:toolbar).step configure -state disabled
-			$self(wid:toolbar).next configure -state disabled
-			$self(wid:toolbar).finish configure -state disabled
-			$self(wid:toolbar).up configure -state disabled
-			$self(wid:toolbar).down configure -state disabled
-			$self(wid:toolbar).backtrace configure -state disabled
-			$self(wid:toolbar).stepi configure -state disabled
-			$self(wid:toolbar).nexti configure -state disabled
-			$self(wid:toolbar).reg configure -state disabled
-			$self(wid:toolbar).print configure -state disabled
-			$self(wid:toolbar).display configure -state disabled
 		} elseif [string match {^error*} $data] {
 			foreach {r c} [split [$self(wid:cmdlog) index end] .] break
 			set i1 "[expr $r - 2 ].0"
@@ -2680,7 +2565,7 @@ proc Dbg::gdb_in {obj} {
 	}
 }
 
-proc Dbg::gdb_out {obj str} {
+proc Tdb::gdb_out {obj str} {
 	upvar $obj self
 	if [catch {puts $self(dbg:pipe) $str} rc] {
 		InsMsg $obj "gdb seems to be gone\n"
@@ -2690,16 +2575,12 @@ proc Dbg::gdb_out {obj str} {
 }
 
 # Handle GDB commands
-proc Dbg::gdb_cmd {obj cmd {args ""}} {
-	variable pp
+proc Tdb::gdb_cmd {obj cmd {args ""}} {
 	upvar $obj self
 	set args [lindex $args 0]
 	switch -exact $cmd {
 		stat {
 			parray self
-		}
-		pp {
-			parray pp
 		}
 		s - step {
 			if {$self(dbg:status) != "running"} {
@@ -2733,7 +2614,7 @@ proc Dbg::gdb_cmd {obj cmd {args ""}} {
 				InsMsg $obj "The program is in running state!\n" warn
 			}
 		}
-		ni - nexti {
+		ni - stepi {
 			if {$self(dbg:status) != "running"} {
 				InsMsg $obj "nexti $args\n" prompt
 				gdb_out $obj -exec-next-instruction
@@ -2801,31 +2682,20 @@ proc Dbg::gdb_cmd {obj cmd {args ""}} {
 				gdb_cmd $obj quit
 			}
 			# FAB: kept all args
-			after 200 [list Dbg::gdb_load_elf $obj "$args" no]
+			after 200 [list Tdb::gdb_load_elf $obj "$args" no]
 		}
 		trace {
 			set self(trace) $args
 		}
 		reload {
 			if {$self(dbg:prog) != ""} {
-				untrackExecChange $obj
 				gdb_cmd $obj quit
 				# FAB: reused progargs
-				after 1500 [list Dbg::gdb_load_elf $obj [concat $self(dbg:prog) $self(dbg:progargs)] yes]
-				# after 200 [list Dbg::gdb_load_elf $obj [concat $self(dbg:prog) $self(dbg:progargs)] yes]
+				after 200 [list Tdb::gdb_load_elf $obj [concat $self(dbg:prog) $self(dbg:progargs)] yes]
+				# after 200 [list Tdb::gdb_load_elf $obj $self(dbg:prog) yes]
 			} else {
 				InsMsg $obj "No program specified!\n" error
 			}
-		}
-		restart {
-			if {$self(dbg:prog) != ""} {
-				gdb_out $obj "tbreak main"
-				gdb_out $obj "monitor reset halt"
-				gdb_out $obj "continue"
-			} else {
-				InsMsg $obj "No program specified!\n" error
-			}
-			
 		}
 		whatis -
 		ptype -
@@ -2866,36 +2736,15 @@ proc Dbg::gdb_cmd {obj cmd {args ""}} {
 		open {
 			InsMsg $obj "$cmd $args\n" prompt
 			foreach f $args {
-				if { [catch {
-					foreach fname [glob $f] {
-						# append filename to file list and menu
-						if {[lsearch $self(file:list) $fname]<0} {
-							lappend self(file:list) $fname
-							set id [Ind2Label [llength $self(file:list)]]
-							set fnl "$id $fname"
-							$self(wid:menu:file) add command -underline 0 -label $fnl\
-							  -command [list Dbg::MNC $obj src $fname]
-						}
+				foreach fname [glob $f] {
+					# append filename to file list and menu
+					if {[lsearch $self(file:list) $fname]<0} {
+						lappend self(file:list) $fname
+						set id [Ind2Label [llength $self(file:list)]]
+						set fnl "$id $fname"
+						$self(wid:menu:file) add command -underline 0 -label $fnl\
+						  -command [list Tdb::MNC $obj src $fname]
 					}
-				}]} {
-					InsMsg $obj "No such files!\n" error
-				} 
-			}
-		}
-		set {
-			foreach {var val} $args break
-			if {[info exists var]} {
-				if {$var == "autoreload"} {
-					InsMsg $obj "set autoreload $val\n" prompt
-					if {$val != ""} {
-						set pp(dbg:autoreload) $val
-						if {![info exists self(trackexec)]} {
-							set self(trackexec) [after 2000 Dbg::trackExecChange $obj]
-						}
-					}
-					InsMsg $obj "$pp(dbg:autoreload)\n" reply
-				} else {
-					gdb_out $obj "$cmd $args"
 				}
 			}
 		}
@@ -2909,7 +2758,7 @@ proc Dbg::gdb_cmd {obj cmd {args ""}} {
 }
 
 
-proc Dbg::gdb_split {str {flattens {}} {qvar {}}} {
+proc Tdb::gdb_split {str {flattens {}} {qvar {}}} {
 	# Convert a GDB response string to a Tcl list.
 	set o {}
 	set last {}
@@ -2976,18 +2825,18 @@ proc Dbg::gdb_split {str {flattens {}} {qvar {}}} {
 #############################################################################
 if {
 	[catch {
-		set o [Dbg::new]
+		set o [Tdb::new]
 		if {[llength $argv]} {
 			if {[file exists [lindex $argv 0]]} {
 				# FAB: added {} around argv
-				eval Dbg::gdb_load_elf $o {$argv}
+				eval Tdb::gdb_load_elf $o {$argv}
 			} else {
-				Dbg::InsMsg $o "dbg $Dbg::pc(dbg:version) Ready...  Use \"File/Debug Program\" to start.\n" reply
+				Tdb::InsMsg $o "TDB $Tdb::pc(tdb:version) Ready...  Use \"File/Debug Program\" to start.\n" reply
 				tk_messageBox -icon warning -title "File Not Found" \
 				  -message "Object file not found"
 			}
 		} else {
-			Dbg::InsMsg $o "dbg $Dbg::pc(dbg:version) Ready...  Use \"File/Debug Program\" to start.\n" reply
+			Tdb::InsMsg $o "TDB $Tdb::pc(tdb:version) Ready...  Use \"File/Debug Program\" to start.\n" reply
 		}
 	} rc]
 } { puts "INIT: $rc: $errorInfo" }
